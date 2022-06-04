@@ -43,6 +43,7 @@ jobs:
           name: Create file << parameters.filename >>
           command: |
             find "$PWD" -maxdepth 3 > << parameters.filename >>
+            find "$PWD" -maxdepth 3 > ../cached_<< parameters.filename >>
       - list_files
       - persist_to_workspace:
           root: ./
