@@ -50,14 +50,13 @@ jobs:
           paths:
             - ./<< parameters.filename >>
 
-  check_structure:
+  check_workspace_structure:
     executor: node
     parameters:
       path:
         type: string
         default: list
     steps:
-      - checkout
       - attach_workspace:
           at: << parameters.path >>
       - list_files
@@ -87,22 +86,22 @@ workflows:
           requires:
             - "Create List A -> C"
             - "Create List B -> D"
-      - check_structure:
+      - check_workspace_structure:
           name: Check List A at ~/
           path: ~/
           requires:
             - "Create List A"
-      - check_structure:
+      - check_workspace_structure:
           name: Check List A at ./
           path: ./
           requires:
             - "Create List A"
-      - check_structure:
+      - check_workspace_structure:
           name: Check List E at ~/
           path: ~/
           requires:
             - "Create List A -> C + B -> D"
-      - check_structure:
+      - check_workspace_structure:
           name: Check List E at ./
           path: ./
           requires:
