@@ -45,9 +45,9 @@ jobs:
             find "$PWD" -maxdepth 3 > << parameters.filename >>
       - list_files
       - persist_to_workspace:
-          root: ~/
+          root: ./
           paths:
-            - ./project/<< parameters.filename >>
+            - ./<< parameters.filename >>
 
   check_structure:
     executor: node
@@ -96,3 +96,13 @@ workflows:
           path: ./
           requires:
             - "Create List A"
+      - check_structure:
+          name: Check List E at ~/
+          path: ~/
+          requires:
+            - "Create List A -> C + B -> D"
+      - check_structure:
+          name: Check List E at ./
+          path: ./
+          requires:
+            - "Create List A -> C + B -> D"
