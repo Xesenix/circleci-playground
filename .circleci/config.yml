@@ -47,7 +47,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - ./<< parameters.filename >>
+            - ./project/<< parameters.filename >>
 
 workflows:
   test_pipelines:
