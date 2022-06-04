@@ -35,10 +35,10 @@ jobs:
         type: string
         default: list
     steps:
-      - checkout
       - attach_workspace:
           at: ~/
       - list_files
+      - checkout
       - run:
           name: Create file << parameters.filename >>
           command: |
@@ -47,7 +47,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - ./
+            - << parameters.filename >>
 
 workflows:
   test_pipelines:
