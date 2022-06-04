@@ -37,7 +37,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/
+          at: ./
       - list_files
       - run:
           name: Create file << parameters.filename >>
@@ -49,6 +49,7 @@ jobs:
           root: ./
           paths:
             - ./<< parameters.filename >>
+            - ../cached_<< parameters.filename >>
 
   check_workspace_structure:
     executor: node
