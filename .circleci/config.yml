@@ -35,10 +35,10 @@ jobs:
         type: string
         default: list
     steps:
+      - checkout
       - attach_workspace:
           at: ~/
       - list_files
-      - checkout
       - run:
           name: Create file << parameters.filename >>
           command: |
