@@ -11,7 +11,7 @@ commands:
       - run:
           name: Listing files
           command: |
-            find "$PWD" -maxdepth 3
+            find "/home/circleci" -maxdepth 3
 
   store_node_modules_cache:
     steps:
