@@ -37,7 +37,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ./
+          at: ~/
       - list_files
       - run:
           name: Create file << parameters.filename >>
@@ -46,10 +46,10 @@ jobs:
             find "$PWD" -maxdepth 3 > ../cached_<< parameters.filename >>
       - list_files
       - persist_to_workspace:
-          root: ./
+          root: ~/
           paths:
-            - ./<< parameters.filename >>
-            - ../cached_<< parameters.filename >>
+            - ./project/<< parameters.filename >>
+            - ./cached_<< parameters.filename >>
 
   check_workspace_structure:
     executor: node
