@@ -59,18 +59,18 @@ workflows:
           name: Create List B
           filename: list_B
       - add_file:
-          name: Create List C
-          filename: list_C
+          name: Create List A -> C
+          filename: list_AC
           requires:
             - "Create List A"
       - add_file:
-          name: Create List D
-          filename: list_D
+          name: Create List B -> D
+          filename: list_BD
           requires:
             - "Create List B"
       - add_file:
-          name: Create List E
-          filename: list_E
+          name: Create List A -> C + B -> D
+          filename: list_AC_BD
           requires:
-            - "Create List C"
-            - "Create List D"
+            - "Create List A -> C"
+            - "Create List B -> D"
