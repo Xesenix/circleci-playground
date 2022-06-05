@@ -11,7 +11,7 @@ commands:
       - run:
           name: Listing files
           command: |
-            find "/home/circleci" -maxdepth 3
+            find "/home/circleci" -maxdepth 5
 
   store_node_modules_cache:
     steps:
@@ -129,8 +129,13 @@ workflows:
           requires:
             - "Create List A -> C + B -> D"
 
+      - npm_install_approve:
+          type: approval
+
       - npm_install_no_cache:
           name: 01 NPM no cache install
+          requires:
+            - npm_install_approve
       - npm_install_no_cache:
           name: 02 NPM no cache install
           requires:
@@ -139,6 +144,8 @@ workflows:
       - npm_install_no_cache:
           name: 01 NPM no cache CI install
           command: ci
+          requires:
+            - npm_install_approve
       - npm_install_no_cache:
           name: 02 NPM no cache CI install
           command: ci
