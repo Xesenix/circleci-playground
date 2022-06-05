@@ -1,5 +1,7 @@
 # Circle CI playground
 
+[![CircleCI](https://circleci.com/gh/Xesenix/circleci-playground/tree/main.svg?style=svg)](https://circleci.com/gh/Xesenix/circleci-playground/tree/main)
+
 Testing circle CI pipelines.
 
 ## Notes
