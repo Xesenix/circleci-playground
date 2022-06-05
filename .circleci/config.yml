@@ -54,12 +54,30 @@ jobs:
   check_workspace_structure:
     executor: node
     parameters:
-      path:
+      attach_at:
         type: string
-        default: list
+        default: ./
     steps:
       - attach_workspace:
-          at: << parameters.path >>
+          at: << parameters.attach_at >>
+      - list_files
+
+  npm_install_no_cache:
+    executor: node
+    parameters:
+      attach_at:
+        type: string
+        default: ./
+      command:
+        type: string
+        default: i
+    steps:
+      - checkout
+      - attach_workspace:
+          at: << parameters.attach_at >>
+      - run:
+          command: |
+            npm << parameters.command >>
       - list_files
 
 workflows:
@@ -92,21 +110,37 @@ workflows:
             - "Create List B -> D"
       - check_workspace_structure:
           name: Check List A at ~/
-          path: ~/
+          attach_at: ~/
           requires:
             - "Create List A"
       - check_workspace_structure:
           name: Check List A at ./
-          path: ./
+          attach_at: ./
           requires:
             - "Create List A"
       - check_workspace_structure:
           name: Check List E at ~/
-          path: ~/
+          attach_at: ~/
           requires:
             - "Create List A -> C + B -> D"
       - check_workspace_structure:
           name: Check List E at ./
-          path: ./
+          attach_at: ./
           requires:
             - "Create List A -> C + B -> D"
+
+      - npm_install_no_cache:
+          name: 01 NPM no cache install
+      - npm_install_no_cache:
+          name: 02 NPM no cache install
+          requires:
+            - 01 NPM no cache install
+
+      - npm_install_no_cache:
+          name: 01 NPM no cache CI install
+          command: ci
+      - npm_install_no_cache:
+          name: 02 NPM no cache CI install
+          command: ci
+          requires:
+            - 01 NPM no cache CI install
