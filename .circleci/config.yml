@@ -71,6 +71,9 @@ workflows:
       - add_file:
           name: Create List B
           filename: list_B
+          filter:
+            tags:
+              only: /^b-*/
       - add_file:
           name: Create List A -> C
           filename: list_AC
