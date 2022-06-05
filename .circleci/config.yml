@@ -80,7 +80,7 @@ jobs:
             npm << parameters.command >>
       - list_files
 
-  npm_install_cached_workspace:
+  npm_install_cached_in_workspace:
     executor: node
     parameters:
       command:
@@ -99,6 +99,26 @@ jobs:
           paths:
             - ".npm"
             - "project/node_modules"
+
+  npm_install_cached_in_cache:
+    executor: node
+    parameters:
+      command:
+        type: string
+        default: i
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node-package-v1-{{ checksum "package-lock.json" }}
+      - run:
+          command: |
+            [ ! -d node_modules ] && npm << parameters.command >> || echo 'Using cache...'
+      - list_files
+      - save_cache:
+          key: node-package-v1-{{ checksum "package-lock.json" }}
+          paths:
+            - "node_modules"
 
 workflows:
   test_pipelines:
@@ -162,32 +182,52 @@ workflows:
             - 01 NPM no cache install
 
       - npm_install_no_cache:
-          name: 01 NPM no cache CI install
+          name: 01 NPM no cache clean install
           command: ci
           requires:
             - npm_install_approve
       - npm_install_no_cache:
-          name: 02 NPM no cache CI install
+          name: 02 NPM no cache clean install
           command: ci
           requires:
-            - 01 NPM no cache CI install
+            - 01 NPM no cache clean install
 
-      - npm_install_cached_workspace:
-          name: 01 NPM cached install
+      - npm_install_cached_in_workspace:
+          name: 01 NPM cached in workspace install
           requires:
             - npm_install_approve
-      - npm_install_cached_workspace:
-          name: 02 NPM cached install
+      - npm_install_cached_in_workspace:
+          name: 02 NPM cached in workspace install
           requires:
-            - 01 NPM cached install
+            - 01 NPM cached in workspace install
 
-      - npm_install_cached_workspace:
-          name: 01 NPM cached CI install
+      - npm_install_cached_in_workspace:
+          name: 01 NPM cached in workspace clean install
           command: ci
           requires:
             - npm_install_approve
-      - npm_install_cached_workspace:
-          name: 02 NPM cached CI install
+      - npm_install_cached_in_workspace:
+          name: 02 NPM cached in workspace clean install
           command: ci
           requires:
-            - 01 NPM cached CI install
+            - 01 NPM cached in workspace clean install
+
+      - npm_install_cached_in_cache:
+          name: 01 NPM cached in cache install
+          requires:
+            - npm_install_approve
+      - npm_install_cached_in_cache:
+          name: 02 NPM cached in cache install
+          requires:
+            - 01 NPM cached in cache install
+
+      - npm_install_cached_in_cache:
+          name: 01 NPM cached in cache clean install
+          command: ci
+          requires:
+            - npm_install_approve
+      - npm_install_cached_in_cache:
+          name: 02 NPM cached in cache clean install
+          command: ci
+          requires:
+            - 01 NPM cached in cache clean install
