@@ -80,6 +80,25 @@ jobs:
             npm << parameters.command >>
       - list_files
 
+  npm_install_cached:
+    executor: node
+    parameters:
+      command:
+        type: string
+        default: i
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - run:
+          command: |
+            npm << parameters.command >>
+      - list_files
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - ".npm"
+
 workflows:
   test_pipelines:
     jobs:
@@ -151,3 +170,23 @@ workflows:
           command: ci
           requires:
             - 01 NPM no cache CI install
+
+      - npm_install_cached:
+          name: 01 NPM cached install
+          requires:
+            - npm_install_approve
+      - npm_install_cached:
+          name: 02 NPM cached install
+          requires:
+            - 01 NPM cached install
+
+      - npm_install_cached:
+          name: 01 NPM cached CI install
+          command: ci
+          requires:
+            - npm_install_approve
+      - npm_install_cached:
+          name: 02 NPM cached CI install
+          command: ci
+          requires:
+            - 01 NPM cached CI install
