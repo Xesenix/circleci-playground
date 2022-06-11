@@ -6,6 +6,12 @@ executors:
       - image: cimg/node:18.2.0
 
 commands:
+  version_echo:
+    steps:
+      - run:
+          command: |
+            echo "${CIRCLE_BRANCH}:${CIRCLE_SHA1}:${CIRCLE_TAG}"
+
   list_files:
     steps:
       - run:
@@ -60,6 +66,7 @@ jobs:
     steps:
       - attach_workspace:
           at: << parameters.attach_at >>
+      - version_echo
       - list_files
 
   npm_install_no_cache:
