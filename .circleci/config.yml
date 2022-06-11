@@ -9,6 +9,7 @@ commands:
   version_echo:
     steps:
       - run:
+          name: Version
           command: |
             echo "${CIRCLE_BRANCH}:${CIRCLE_SHA1}:${CIRCLE_TAG}"
 
@@ -144,6 +145,9 @@ workflows:
           filename: list_AC
           requires:
             - "Create List A"
+          filters:
+            tags:
+              only: /^b-*/
       - add_file:
           name: Create List B -> D
           filename: list_BD
@@ -160,11 +164,17 @@ workflows:
           attach_at: ~/
           requires:
             - "Create List A"
+          filters:
+            tags:
+              only: /^a-*/
       - check_workspace_structure:
           name: Check List A at ./
           attach_at: ./
           requires:
             - "Create List A"
+          filters:
+            tags:
+              only: /^a-*/
       - check_workspace_structure:
           name: Check List E at ~/
           attach_at: ~/
