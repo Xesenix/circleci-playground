@@ -136,13 +136,13 @@ workflows:
           filename: list_A
           filters:
             tags:
-              only: /^a-*/
+              only: /^a-.*/
       - add_file:
           name: Create List B
           filename: list_B
           filters:
             tags:
-              only: /^b-*/
+              only: /^b-.*/
       - add_file:
           name: Create List A -> C
           filename: list_AC
@@ -150,7 +150,7 @@ workflows:
             - "Create List A"
           filters:
             tags:
-              only: /^a-*/
+              only: /^a-.*/
       - add_file:
           name: Create List B -> D
           filename: list_BD
@@ -158,7 +158,7 @@ workflows:
             - "Create List B"
           filters:
             tags:
-              only: /^b-*/
+              only: /^b-.*/
       - add_file:
           name: Create List A -> C + B -> D
           filename: list_AC_BD
@@ -167,7 +167,7 @@ workflows:
             - "Create List B -> D"
           filters:
             tags:
-              only: /^(a|b)-*/
+              only: /^(a|b)-.*/
       - check_workspace_structure:
           name: Check List A at ~/
           attach_at: ~/
@@ -175,7 +175,7 @@ workflows:
             - "Create List A"
           filters:
             tags:
-              only: /^a-*/
+              only: /^a-.*/
       - check_workspace_structure:
           name: Check List A at ./
           attach_at: ./
@@ -183,7 +183,7 @@ workflows:
             - "Create List A"
           filters:
             tags:
-              only: /^a-*/
+              only: /^a-.*/
       - check_workspace_structure:
           name: Check List E at ~/
           attach_at: ~/
@@ -191,7 +191,7 @@ workflows:
             - "Create List A -> C + B -> D"
           filters:
             tags:
-              only: /^(a|b)-*/
+              only: /^(a|b)-.*/
       - check_workspace_structure:
           name: Check List E at ./
           attach_at: ./
@@ -199,7 +199,7 @@ workflows:
             - "Create List A -> C + B -> D"
           filters:
             tags:
-              only: /^(a|b)-*/
+              only: /^(a|b)-.*/
 
       - npm_install_approve:
           type: approval
