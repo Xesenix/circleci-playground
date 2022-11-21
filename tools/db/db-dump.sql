@@ -8,6 +8,6 @@ CREATE TABLE "public"."test" (
 ) WITH (oids = false);
 
 INSERT INTO "test" ("version") VALUES
-('Version A');
+('Version A 2');
 
 -- 2022-11-21 00:07:19.501465+00
