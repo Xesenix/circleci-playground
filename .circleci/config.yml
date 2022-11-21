@@ -148,7 +148,6 @@ jobs:
           name: Build application
           command: |
             export TAG="${CIRCLE_BRANCH/\//_}_${CIRCLE_TAG:-latest}"
-            docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
             docker-compose -f ./docker-compose.yml build
 
   docker_compose_up:
@@ -164,8 +163,7 @@ jobs:
           name: Start application
           command: |
             export TAG="${CIRCLE_BRANCH/\//_}_${CIRCLE_TAG:-latest}"
-            docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
-            docker-compose -f ./docker-compose.yml up
+            docker-compose -f ./docker-compose.yml up -d
       - run:
           name: Wait for application
           command: sleep 10
