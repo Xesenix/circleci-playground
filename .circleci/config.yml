@@ -39,6 +39,12 @@ commands:
           keys:
             - node-modules-v1-{{ checksum "package-lock.json" }}
             - node-modules-v1-
+  
+  list_docker_images:
+    steps:
+      - run:
+          name: List docker images
+          command: docker images
 
 jobs:
   add_file:
@@ -149,6 +155,7 @@ jobs:
           command: |
             export TAG="${CIRCLE_BRANCH/\//_}_${CIRCLE_TAG:-latest}"
             docker-compose -f ./docker-compose.yml build
+      - list_docker_images
 
   docker_compose_up:
     docker:
@@ -167,6 +174,7 @@ jobs:
       - run:
           name: Wait for application
           command: sleep 10
+      - list_docker_images
       - run:
           name: Request database state
           command: |
