@@ -2,7 +2,12 @@
   "name": "circleci-playground",
   "version": "1.0.0",
   "description": "",
-  "scripts": {},
+  "scripts": {
+    "docker:dev": "docker-compose --env-file .env -f ./docker-compose.yml -p circle-ci-playground --profile with-tools",
+    "docker:dev:build": "npm run docker:dev -- build",
+    "docker:dev:up": "npm run docker:dev -- up -d",
+    "docker:dev:start": "npm run docker:dev:build && npm run docker:dev:up"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Xesenix/circleci-playground.git"

@@ -1,5 +1,11 @@
 version: 2.1
 
+parameters:
+  action:
+    type: enum
+    enum: [database, folders]
+    default: folders
+
 executors:
   node:
     docker:
@@ -128,8 +134,65 @@ jobs:
           paths:
             - "node_modules"
 
+  docker_compose_build:
+    docker:
+      - image: cimg/base:stable
+        auth:
+          username: $DOCKERHUB_USER
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - checkout
+      - run:
+          name: Build application
+          command: |
+            export TAG="${CIRCLE_BRANCH/\//_}_${CIRCLE_TAG:-latest}"
+            docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
+            docker-compose -f ./docker-compose.yml build
+
+  docker_compose_up:
+    docker:
+      - image: cimg/base:stable
+        auth:
+          username: $DOCKERHUB_USER
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: Start application
+          command: |
+            export TAG="${CIRCLE_BRANCH/\//_}_${CIRCLE_TAG:-latest}"
+            docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
+            docker-compose -f ./docker-compose.yml up
+      - run:
+          name: Wait for application
+          command: sleep 10
+      - run:
+          name: Request database state
+          command: |
+            docker exec circle-ci-postgres-db psql -U postgres postgres -c \dt+
+            docker exec circle-ci-postgres-db psql -U postgres postgres -c "SELECT * FROM test;"
+
 workflows:
+  test_database:
+    when:
+      equal: [ database, << pipeline.parameters.action >> ]
+    jobs:
+      - docker_compose_build
+      - docker_up_approve:
+          type: approval
+          requires:
+            - docker_compose_build
+      - docker_compose_up:
+          requires:
+            - docker_up_approve
+
+
   test_pipelines:
+    when:
+      equal: [ folders, << pipeline.parameters.action >> ]
     jobs:
       - add_file:
           name: Create List A

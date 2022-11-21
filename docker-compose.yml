@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+  postgres-db:
+    container_name: circle-ci-postgres-db
+    image: circle-ci-db:${TAG:-latest}
+    build:
+      context: tools/db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgress}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgress}
+      POSTGRES_DB: ${POSTGRES_DB:-postgress}
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER:-postgress}
+      start_period: 60s
+      retries: 5
+      interval: 10s
+
+  adminer:
+    container_name: circle-ci-db-adminer
+    image: adminer
+    restart: always
+    environment:
+      ADMINER_DEFAULT_SERVER: ${ADMINER_DEFAULT_SERVER:-postgres}
+      ADMINER_DESIGN: ${ADMINER_DESIGN:-pepa-linha-dark}
+    ports:
+      - 8080:8080
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - postgres
+    profiles:
+      - with-tools
+
+networks:
+  postgres:
+    driver: bridge
