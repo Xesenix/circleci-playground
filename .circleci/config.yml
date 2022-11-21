@@ -4,7 +4,7 @@ parameters:
   action:
     type: enum
     enum: [database, folders]
-    default: folders
+    default: database
 
 executors:
   node:
@@ -170,7 +170,7 @@ jobs:
       - run:
           name: Request database state
           command: |
-            docker exec circle-ci-postgres-db psql -U postgres postgres -c "\dt+""
+            docker exec circle-ci-postgres-db psql -U postgres postgres -c "\dt+"
             docker exec circle-ci-postgres-db psql -U postgres postgres -c "SELECT * FROM test;"
 
 workflows:
